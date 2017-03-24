@@ -74,12 +74,12 @@ void print_context(const std::string& file, const soc_desc::error_context_t& ctx
 {
     for(size_t j = 0; j < ctx.count(); j++)
     {
-        soc_desc::error_t e = ctx.get(j);
+        soc_desc::err_t e = ctx.get(j);
         switch(e.level())
         {
-            case soc_desc::error_t::INFO: printf("[INFO]"); break;
-            case soc_desc::error_t::WARNING: printf("[WARN]"); break;
-            case soc_desc::error_t::FATAL: printf("[FATAL]"); break;
+            case soc_desc::err_t::INFO: printf("[INFO]"); break;
+            case soc_desc::err_t::WARNING: printf("[WARN]"); break;
+            case soc_desc::err_t::FATAL: printf("[FATAL]"); break;
             default: printf("[UNK]"); break;
         }
         if(e.location().size() != 0)
@@ -125,6 +125,24 @@ void print_log(std::shared_ptr<handle> hwdev)
 /**
  * Lua specific
  */
+
+/* the lua_*unsigned functions were never really documented and got deprecated in
+ * lua 5.3. There are simply casts anyway so reimplement them with proper typing */
+static void mylua_pushunsigned(lua_State *L, lua_Unsigned n)
+{
+    lua_pushnumber(L, (lua_Number)n);
+}
+
+static lua_Unsigned mylua_checkunsigned(lua_State *L, int arg)
+{
+    return (lua_Unsigned)luaL_checknumber(L, arg);
+}
+
+static lua_Unsigned mylua_tounsigned(lua_State *L, int arg)
+{
+    return (lua_Unsigned)lua_tointeger(L, arg);
+}
+
 int my_lua_help(lua_State *state)
 {
     bool has_sub = false;
@@ -274,7 +292,7 @@ int my_lua_readn(lua_State *state)
     int n = lua_gettop(state);
     if(n != 1)
         luaL_error(state, "readn takes a single argument");
-    lua_pushunsigned(state, fn(state, luaL_checkunsigned(state, 1)));
+    mylua_pushunsigned(state, fn(state, mylua_checkunsigned(state, 1)));
     return 1;
 }
 
@@ -284,7 +302,7 @@ int my_lua_writen(lua_State *state)
     int n = lua_gettop(state);
     if(n != 2)
         luaL_error(state, "writen takes two arguments");
-    fn(state, luaL_checkunsigned(state, 1), luaL_checkunsigned(state, 2));
+    fn(state, mylua_checkunsigned(state, 1), mylua_checkunsigned(state, 2));
     return 0;
 }
 
@@ -292,9 +310,11 @@ int my_lua_call(lua_State *state)
 {
     int n = lua_gettop(state);
     if(n != 1)
-        luaL_error(state, "call takes target address argument");
+        luaL_error(state, "call takes one argument: target address");
 
-    g_hwdev->exec(luaL_checkunsigned(state, 1), HWSTUB_EXEC_CALL);
+    error ret = g_hwdev->exec(luaL_checkunsigned(state, 1), HWSTUB_EXEC_CALL);
+    if(ret != error::SUCCESS)
+        luaL_error(state, "call failed");
     return 0;
 }
 
@@ -302,9 +322,67 @@ int my_lua_jump(lua_State *state)
 {
     int n = lua_gettop(state);
     if(n != 1)
-        luaL_error(state, "jump takes target address argument");
+        luaL_error(state, "jump takes one argument: target address");
 
-   g_hwdev->exec(luaL_checkunsigned(state, 1), HWSTUB_EXEC_JUMP);
+    error ret = g_hwdev->exec(luaL_checkunsigned(state, 1), HWSTUB_EXEC_JUMP);
+    if(ret != error::SUCCESS)
+        luaL_error(state, "jump failed");
+    return 0;
+}
+
+int my_lua_read32_cop(lua_State *state)
+{
+    int n = lua_gettop(state);
+    if(n != 1)
+        luaL_error(state, "read32_cop takes one argument: arguments (array)");
+    uint8_t args[HWSTUB_COP_ARGS] = {0};
+    /* parse array */
+    luaL_checktype(state, 1, LUA_TTABLE);
+    size_t sz = lua_rawlen(state, 1);
+    if(sz > HWSTUB_COP_ARGS)
+        luaL_error(state, "coprocessor operation take at most %d arguments", HWSTUB_COP_ARGS);
+    for(size_t i = 0; i < sz; i++)
+    {
+        lua_pushinteger(state, i + 1); /* index start at 1 */
+        lua_gettable(state, 1);
+        /* check it is an integer */
+        args[i] = luaL_checkunsigned(state, -1);
+        /* pop it */
+        lua_pop(state, 1);
+    }
+
+    uint32_t val;
+    error ret = g_hwdev->read32_cop(args, val);
+    if(ret != error::SUCCESS)
+        luaL_error(state, "coprocessor read failed");
+    lua_pushunsigned(state, val);
+    return 1;
+}
+
+int my_lua_write32_cop(lua_State *state)
+{
+    int n = lua_gettop(state);
+    if(n != 2)
+        luaL_error(state, "write32_cop takes two arguments: arguments (array) and value");
+    uint8_t args[HWSTUB_COP_ARGS] = {0};
+    /* parse array */
+    luaL_checktype(state, 1, LUA_TTABLE);
+    size_t sz = lua_rawlen(state, 1);
+    if(sz > HWSTUB_COP_ARGS)
+        luaL_error(state, "coprocessor operation take at most %d arguments", HWSTUB_COP_ARGS);
+    for(size_t i = 0; i < sz; i++)
+    {
+        lua_pushinteger(state, i + 1); /* index start at 1 */
+        lua_gettable(state, 1);
+        /* check it is an integer */
+        args[i] = luaL_checkunsigned(state, -1);
+        /* pop it */
+        lua_pop(state, 1);
+    }
+
+    error ret = g_hwdev->write32_cop(args, luaL_checkunsigned(state, 2));
+    if(ret != error::SUCCESS)
+        luaL_error(state, "coprocessor write failed");
     return 0;
 }
 
@@ -735,6 +813,10 @@ bool my_lua_import_hwstub()
     lua_setfield(g_lua, -2, "call");
     lua_pushcclosure(g_lua, my_lua_jump, 0);
     lua_setfield(g_lua, -2, "jump");
+    lua_pushcclosure(g_lua, my_lua_read32_cop, 0);
+    lua_setfield(g_lua, -2, "read32_cop");
+    lua_pushcclosure(g_lua, my_lua_write32_cop, 0);
+    lua_setfield(g_lua, -2, "write32_cop");
 
     lua_setfield(g_lua, -2, "dev");
 
@@ -828,9 +910,9 @@ int my_lua_read_reg(lua_State *state)
     int n = lua_gettop(state);
     if(n != 0)
         luaL_error(state, "read() takes no argument");
-    unsigned width = lua_tounsigned(state, lua_upvalueindex(1));
-    soc_addr_t addr = lua_tounsigned(state, lua_upvalueindex(2));
-    lua_pushunsigned(state, hw_readn(state, width, addr));
+    unsigned width = mylua_tounsigned(state, lua_upvalueindex(1));
+    soc_addr_t addr = mylua_tounsigned(state, lua_upvalueindex(2));
+    mylua_pushunsigned(state, hw_readn(state, width, addr));
     return 1;
 }
 
@@ -839,9 +921,9 @@ int my_lua_write_reg(lua_State *state)
     int n = lua_gettop(state);
     if(n != 1)
         luaL_error(state, "write() takes one argument");
-    soc_word_t val = luaL_checkunsigned(state, 1);
-    unsigned width = lua_tounsigned(state, lua_upvalueindex(1));
-    soc_addr_t addr = lua_tounsigned(state, lua_upvalueindex(2));
+    soc_word_t val = mylua_checkunsigned(state, 1);
+    unsigned width = mylua_tounsigned(state, lua_upvalueindex(1));
+    soc_addr_t addr = mylua_tounsigned(state, lua_upvalueindex(2));
     hw_writen(state, width, addr, val);
     return 0;
 }
@@ -851,11 +933,11 @@ int my_lua_read_field(lua_State *state)
     int n = lua_gettop(state);
     if(n != 0)
         luaL_error(state, "read() takes no argument");
-    unsigned width = lua_tounsigned(state, lua_upvalueindex(1));
-    soc_addr_t addr = lua_tounsigned(state, lua_upvalueindex(2));
-    soc_word_t shift = lua_tounsigned(state, lua_upvalueindex(3));
-    soc_word_t mask = lua_tounsigned(state, lua_upvalueindex(4));
-    lua_pushunsigned(state, (hw_readn(state, width, addr) >> shift) & mask);
+    unsigned width = mylua_tounsigned(state, lua_upvalueindex(1));
+    soc_addr_t addr = mylua_tounsigned(state, lua_upvalueindex(2));
+    soc_word_t shift = mylua_tounsigned(state, lua_upvalueindex(3));
+    soc_word_t mask = mylua_tounsigned(state, lua_upvalueindex(4));
+    mylua_pushunsigned(state, (hw_readn(state, width, addr) >> shift) & mask);
     return 1;
 }
 
@@ -864,11 +946,11 @@ int my_lua_write_field(lua_State *state)
     int n = lua_gettop(state);
     if(n != 0 && n!= 1)
         luaL_error(state, "write() takes one or no argument");
-    unsigned width = lua_tounsigned(state, lua_upvalueindex(1));
-    soc_addr_t addr = lua_tounsigned(state, lua_upvalueindex(2));
-    soc_word_t shift = lua_tounsigned(state, lua_upvalueindex(3));
-    soc_word_t mask = lua_tounsigned(state, lua_upvalueindex(4));
-    char op = lua_tounsigned(state, lua_upvalueindex(6));
+    unsigned width = mylua_tounsigned(state, lua_upvalueindex(1));
+    soc_addr_t addr = mylua_tounsigned(state, lua_upvalueindex(2));
+    soc_word_t shift = mylua_tounsigned(state, lua_upvalueindex(3));
+    soc_word_t mask = mylua_tounsigned(state, lua_upvalueindex(4));
+    char op = mylua_tounsigned(state, lua_upvalueindex(6));
 
     soc_word_t value = mask;
     if(n == 1)
@@ -880,11 +962,11 @@ int my_lua_write_field(lua_State *state)
             lua_gettable(state, -2);
             if(lua_isnil(state, -1))
                 luaL_error(state, "field has no value %s", lua_tostring(state, 1));
-            value = luaL_checkunsigned(state, -1);
+            value = mylua_checkunsigned(state, -1);
             lua_pop(state, 2);
         }
         else
-            value = luaL_checkunsigned(state, 1);
+            value = mylua_checkunsigned(state, 1);
         value &= mask;
     }
 
@@ -909,11 +991,11 @@ int my_lua_sct_reg(lua_State *state)
     int n = lua_gettop(state);
     if(n != 1)
         luaL_error(state, "sct() takes one argument");
-    unsigned width = lua_tounsigned(state, lua_upvalueindex(1));
-    soc_addr_t addr = lua_tounsigned(state, lua_upvalueindex(2));
-    char op = lua_tounsigned(state, lua_upvalueindex(3));
+    unsigned width = mylua_tounsigned(state, lua_upvalueindex(1));
+    soc_addr_t addr = mylua_tounsigned(state, lua_upvalueindex(2));
+    char op = mylua_tounsigned(state, lua_upvalueindex(3));
 
-    soc_word_t mask = luaL_checkunsigned(state, 1);
+    soc_word_t mask = mylua_checkunsigned(state, 1);
     soc_word_t value = hw_read32(state, addr);
     if(op == 's')
         value |= mask;
@@ -942,37 +1024,37 @@ void my_lua_create_field(soc_addr_t addr, soc_desc::field_ref_t field)
     lua_setfield(g_lua, -2, "name");
     /* lua stack: <field table> ... */
 
-    lua_pushunsigned(g_lua, addr);
+    mylua_pushunsigned(g_lua, addr);
     /* lua stack: <addr> <field table> ... */
     lua_setfield(g_lua, -2, "addr");
     /* lua stack: <field table> ... */
 
-    lua_pushunsigned(g_lua, f->pos);
+    mylua_pushunsigned(g_lua, f->pos);
     /* lua stack: <pos> <field table> ... */
     lua_setfield(g_lua, -2, "pos");
     /* lua stack: <field table> ... */
 
-    lua_pushunsigned(g_lua, f->width);
+    mylua_pushunsigned(g_lua, f->width);
     /* lua stack: <width> <field table> ... */
     lua_setfield(g_lua, -2, "width");
     /* lua stack: <field table> ... */
 
-    lua_pushunsigned(g_lua, f->bitmask());
+    mylua_pushunsigned(g_lua, f->bitmask());
     /* lua stack: <bm> <field table> ... */
     lua_setfield(g_lua, -2, "bitmask");
     /* lua stack: <field table> ... */
 
     soc_word_t local_bitmask = f->bitmask() >> f->pos;
-    lua_pushunsigned(g_lua, local_bitmask);
+    mylua_pushunsigned(g_lua, local_bitmask);
     /* lua stack: <local_bm> <field table> ... */
     lua_setfield(g_lua, -2, "local_bitmask");
     /* lua stack: <field table> ... */
 
     /** create read routine */
-    lua_pushunsigned(g_lua, field.reg().get()->width);
-    lua_pushunsigned(g_lua, addr);
-    lua_pushunsigned(g_lua, f->pos);
-    lua_pushunsigned(g_lua, local_bitmask);
+    mylua_pushunsigned(g_lua, field.reg().get()->width);
+    mylua_pushunsigned(g_lua, addr);
+    mylua_pushunsigned(g_lua, f->pos);
+    mylua_pushunsigned(g_lua, local_bitmask);
     /* lua stack: <local_bm> <pos> <addr> <width> <field table> ... */
     lua_pushcclosure(g_lua, my_lua_read_field, 4);
     /* lua stack: <my_lua_read_field> <field table> ... */
@@ -984,14 +1066,14 @@ void my_lua_create_field(soc_addr_t addr, soc_desc::field_ref_t field)
     static const char arg[] = {'w', 's', 'c', 't'};
     for(int i = 0; i < 4; i++)
     {
-        lua_pushunsigned(g_lua, field.reg().get()->width);
-        lua_pushunsigned(g_lua, addr);
-        lua_pushunsigned(g_lua, f->pos);
-        lua_pushunsigned(g_lua, local_bitmask);
+        mylua_pushunsigned(g_lua, field.reg().get()->width);
+        mylua_pushunsigned(g_lua, addr);
+        mylua_pushunsigned(g_lua, f->pos);
+        mylua_pushunsigned(g_lua, local_bitmask);
         /* lua stack: <local_bm> <pos> <addr> <width> <field table> ... */
         lua_pushvalue(g_lua, -5);
         /* lua stack: <field table> <local_bm> <pos> <addr> <width> <field table> ... */
-        lua_pushunsigned(g_lua, arg[i]);
+        mylua_pushunsigned(g_lua, arg[i]);
         /* lua stack: <'wsct'> <field table> <local_bm> <pos> <addr> <width> <field table> ... */
         lua_pushcclosure(g_lua, my_lua_write_field, 6);
         /* lua stack: <my_lua_write_field> <field table> ... */
@@ -1002,7 +1084,7 @@ void my_lua_create_field(soc_addr_t addr, soc_desc::field_ref_t field)
     /** create values */
     for(size_t i = 0; i < f->enum_.size(); i++)
     {
-        lua_pushunsigned(g_lua, f->enum_[i].value);
+        mylua_pushunsigned(g_lua, f->enum_[i].value);
         /* lua stack: <value> <field table> ... */
         lua_setfield(g_lua, -2, f->enum_[i].name.c_str());
         /* lua stack: <field table> ... */
@@ -1020,16 +1102,16 @@ void my_lua_create_reg(soc_addr_t addr, soc_desc::register_ref_t reg,
     if(!reg.valid())
         return;
     /** create read/write routine */
-    lua_pushunsigned(g_lua, reg.get()->width);
-    lua_pushunsigned(g_lua, addr);
+    mylua_pushunsigned(g_lua, reg.get()->width);
+    mylua_pushunsigned(g_lua, addr);
     /* lua stack: <addr> <width> <inst table> */
     lua_pushcclosure(g_lua, my_lua_read_reg, 2);
     /* lua stack: <my_lua_read_reg> <inst table> */
     lua_setfield(g_lua, -2, "read");
     /* lua stack: <inst table> */
 
-    lua_pushunsigned(g_lua, reg.get()->width);
-    lua_pushunsigned(g_lua, addr);
+    mylua_pushunsigned(g_lua, reg.get()->width);
+    mylua_pushunsigned(g_lua, addr);
     /* lua stack: <addr> <width> <inst table> */
     lua_pushcclosure(g_lua, my_lua_write_reg, 2);
     /* lua stack: <my_lua_write_reg> <inst table> */
@@ -1041,10 +1123,10 @@ void my_lua_create_reg(soc_addr_t addr, soc_desc::register_ref_t reg,
     static const char arg[] = {'s', 'c', 't'};
     for(int i = 0; i < 3; i++)
     {
-        lua_pushunsigned(g_lua, reg.get()->width);
-        lua_pushunsigned(g_lua, addr);
+        mylua_pushunsigned(g_lua, reg.get()->width);
+        mylua_pushunsigned(g_lua, addr);
         /* lua stack: <addr> <width> <inst table> */
-        lua_pushunsigned(g_lua, arg[i]);
+        mylua_pushunsigned(g_lua, arg[i]);
         /* lua stack: <'s'/'c'/'t'> <addr> <width> <inst table> */
         lua_pushcclosure(g_lua, my_lua_sct_reg, 3);
         /* lua stack: <my_lua_sct_reg> <inst table> */
@@ -1122,7 +1204,7 @@ void my_lua_create_instances(const std::vector< soc_desc::node_inst_t >& inst)
         lua_setfield(g_lua, -2, "title");
         /* lua stack: <instance table> ... */
 
-        lua_pushunsigned(g_lua, inst[i].addr());
+        mylua_pushunsigned(g_lua, inst[i].addr());
         /* lua stack: <node addr> <instance table> ... */
         lua_setfield(g_lua, -2, "addr");
         /* lua stack: <instance table> ... */
@@ -1217,10 +1299,11 @@ void usage(void)
     printf("shell, compiled with hwstub protocol %d.%d\n",
         HWSTUB_VERSION_MAJOR, HWSTUB_VERSION_MINOR);
     printf("\n");
-    printf("usage: shell [options] <soc desc files>\n");
+    printf("usage: hwstub_shell [options] <soc desc files>\n");
     printf("options:\n");
     printf("  --help/-?       Display this help\n");
     printf("  --quiet/-q      Quiet non-command messages\n");
+    printf("  -b/--batch      Disable interactive mode after running commands and files\n");
     printf("  --verbose/-v    Verbose output\n");
     printf("  -i <init>       Set lua init file (default is init.lua)\n");
     printf("  -e <cmd>        Execute <cmd> at startup\n");
@@ -1266,15 +1349,17 @@ void load_std_desc(std::vector< soc_desc::soc_t >& socs)
             printf("Cannot load description file '%s'\n", file.c_str());
             socs.pop_back();
         }
-        print_context(file, ctx);
+        if(!g_quiet)
+            print_context(file, ctx);
     }
     closedir(dir);
 }
 
 int main(int argc, char **argv)
 {
-    const char *dev_uri = hwstub::uri::default_uri().full_uri().c_str();
+    std::string dev_uri = hwstub::uri::default_uri().full_uri();
     bool verbose = false;
+    bool batch = false;
 
     const char *lua_init = "init.lua";
     std::vector< std::pair< exec_type, std::string > > startup_cmds;
@@ -1291,11 +1376,12 @@ int main(int argc, char **argv)
             {"startfile", required_argument, 0, 'f'},
             {"dev", required_argument, 0, 'd'},
             {"verbose", no_argument, 0, 'v'},
+            {"batch", no_argument, 0, 'b'},
             {"debug-rw", no_argument, 0, OPT_DBG_RW},
             {0, 0, 0, 0}
         };
 
-        int c = getopt_long(argc, argv, "?qi:e:f:d:v", long_options, NULL);
+        int c = getopt_long(argc, argv, "?qi:e:f:d:vb", long_options, NULL);
         if(c == -1)
             break;
         switch(c)
@@ -1326,6 +1412,9 @@ int main(int argc, char **argv)
             case OPT_DBG_RW:
                 g_print_mem_rw = true;
                 break;
+            case 'b':
+                batch = true;
+                break;
             default:
                 abort();
         }
@@ -1342,7 +1431,8 @@ int main(int argc, char **argv)
             printf("Cannot load description file '%s'\n", argv[i]);
             socs.pop_back();
         }
-        print_context(argv[i], ctx);
+        if(!g_quiet)
+            print_context(argv[i], ctx);
     }
     /* load standard desc files */
     load_std_desc(socs);
@@ -1423,7 +1513,9 @@ int main(int argc, char **argv)
     /* intercept CTRL+C */
     signal(SIGINT, do_signal);
     // start interactive shell
-    luap_enter(g_lua, &g_exit);
+    if(!batch)
+        luap_enter(g_lua, &g_exit);
+    // cleanup
     lua_close(g_lua);
 
     // display log if handled

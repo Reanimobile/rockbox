@@ -24,6 +24,7 @@
 #include <getopt.h>
 #include <stdbool.h>
 #include <ctype.h>
+#include <iostream>
 #include "hwstub.hpp"
 #include "hwstub_uri.hpp"
 
@@ -105,12 +106,16 @@ bool could_be_rockbox(unsigned char *buffer, size_t size)
 
 void usage(void)
 {
-    printf("usage: hwstub::load [options] <addr> <file>\n");
+    printf("usage: hwstub_load [options] <addr> <file>\n");
     printf("options:\n");
     printf("  --help/-?       Display this help\n");
     printf("  --quiet/-q      Quiet output\n");
+    printf("  --verbose/-v    Verbose output\n");
     printf("  --type/-t <t>   Override file type\n");
     printf("  --dev/-d <uri>  Device URI (see below)\n");
+    printf("  --verbose/-v    Display debug output\n");
+    printf("  --noload        Skip loading stage and only execute the given address\n");
+    printf("  --noexec        Skip execute stage and only load data the given address\n");
     printf("file types:\n");
     printf("  raw      Load a raw binary blob\n");
     printf("  rockbox  Load a rockbox image produced by scramble\n");
@@ -127,21 +132,26 @@ int main(int argc, char **argv)
 {
     bool quiet = false;
     enum image_type_t type = IT_DETECT;
-    const char *uri = "usb:";
+    bool verbose = false;
+    const char *uri = hwstub::uri::default_uri().full_uri().c_str();
+    bool no_load = false, no_exec = false;
 
     // parse command line
     while(1)
     {
         static struct option long_options[] =
         {
-            {"help", no_argument, 0, '?'},
+            {"help", no_argument, 0, 'h'},
             {"quiet", no_argument, 0, 'q'},
             {"type", required_argument, 0, 't'},
             {"dev", required_argument, 0, 'd'},
+            {"verbose", no_argument, 0, 'v'},
+            {"noload", no_argument, 0, 'e'},
+            {"noexec", no_argument, 0, 'l'},
             {0, 0, 0, 0}
         };
 
-        int c = getopt_long(argc, argv, "?qt:d:", long_options, NULL);
+        int c = getopt_long(argc, argv, "hqt:d:elv", long_options, NULL);
         if(c == -1)
             break;
         switch(c)
@@ -151,7 +161,7 @@ int main(int argc, char **argv)
             case 'q':
                 quiet = true;
                 break;
-            case '?':
+            case 'h':
                 usage();
                 break;
             case 't':
@@ -169,6 +179,14 @@ int main(int argc, char **argv)
                 break;
             case 'd':
                 uri = optarg;
+                break;
+            case 'v':
+                verbose = true;
+            case 'e':
+                no_load = true;
+                break;
+            case 'l':
+                no_exec = true;
                 break;
             default:
                 abort();
@@ -236,6 +254,8 @@ int main(int argc, char **argv)
         printf("Cannot create context: %s\n", errstr.c_str());
         return 1;
     }
+    if(verbose)
+        hwctx->set_debug(std::cout);
     std::vector<std::shared_ptr<hwstub::device>> list;
     hwstub::error ret = hwctx->get_device_list(list);
     if(ret != hwstub::error::SUCCESS)
@@ -257,15 +277,33 @@ int main(int argc, char **argv)
         return 1;
     }
 
-    size_t out_size = size;
-    ret = hwdev->write(addr, buffer, out_size, false);
-    if(ret != hwstub::error::SUCCESS || out_size != size)
+    /* load */
+    if(!no_load)
     {
-        fprintf(stderr, "Image write failed: %s, %zu/%zu\n", error_string(ret).c_str(),
-            out_size, size);
-        goto Lerr;
+        size_t out_size = size;
+        ret = hwdev->write(addr, buffer, out_size, false);
+        if(ret != hwstub::error::SUCCESS || out_size != size)
+        {
+            fprintf(stderr, "Image write failed: %s, %zu/%zu\n", error_string(ret).c_str(),
+                out_size, size);
+            goto Lerr;
+        }
     }
-    hwdev->exec(addr, HWSTUB_EXEC_JUMP);
+    else
+        printf("Skip load as requested\n");
+
+    /* exec */
+    if(!no_exec)
+    {
+        ret = hwdev->exec(addr, HWSTUB_EXEC_JUMP);
+        if(ret != hwstub::error::SUCCESS)
+        {
+            fprintf(stderr, "Exec failed: %s\n", error_string(ret).c_str());
+            goto Lerr;
+        }
+    }
+    else
+        printf("Skip exec as requested\n");
 
     return 0;
 
@@ -277,7 +315,7 @@ int main(int argc, char **argv)
         char buffer[128];
         size_t size = sizeof(buffer) - 1;
         hwstub::error err = hwdev->get_log(buffer, size);
-        if(err != hwstub::error::SUCCESS)
+        if(err != error::SUCCESS || size == 0)
             break;
         buffer[size] = 0;
         fprintf(stderr, "%s", buffer);
