@@ -126,7 +126,7 @@
   </dest>
   <voice>
     *: none
-    soft_shutdown: ""
+    soft_shutdown: "Нажмите OFF для выключения"
   </voice>
 </phrase>
 <phrase>
@@ -511,7 +511,7 @@
   </dest>
   <voice>
     *: none
-    masf: ""
+    masf: "Время спада автогромкости"
   </voice>
 </phrase>
 <phrase>
@@ -759,7 +759,7 @@
     *: "Выбор файлов .cfg "
   </dest>
   <voice>
-    *: "Выбор файлов .cfg "
+    *: "Выбор файлов cfg "
   </voice>
 </phrase>
 <phrase>
@@ -801,7 +801,7 @@
     *: "Запись файла .cfg"
   </dest>
   <voice>
-    *: "Запись файла .cfg"
+    *: "Запись файла cfg"
   </voice>
 </phrase>
 <phrase>
@@ -937,7 +937,7 @@
   </dest>
   <voice>
     *: none
-    swcodec: ""
+    swcodec: "Режим редактирования %s"
   </voice>
 </phrase>
 <phrase>
@@ -1154,7 +1154,7 @@
     *: "Отладка (не трогать!)"
   </dest>
   <voice>
-    *: "Отладка (не трогать!)"
+    *: "Отладка не трогать!"
   </voice>
 </phrase>
 <phrase>
@@ -1210,7 +1210,7 @@
     *: "А-Б"
   </dest>
   <voice>
-    *: "А-Б"
+    *: "Отрезок А Б"
   </voice>
 </phrase>
 <phrase>
@@ -1269,7 +1269,7 @@
     *: "Затухание при остановке/паузе"
   </dest>
   <voice>
-    *: "Затухание при остановке/паузе"
+    *: "Затухание при остановке паузе"
   </voice>
 </phrase>
 <phrase>
@@ -1629,7 +1629,7 @@
   </dest>
   <voice>
     *: none
-    remote: "Выбор файлов .rwps"
+    remote: "Выбор файлов rwps"
   </voice>
 </phrase>
 <phrase>
@@ -1691,7 +1691,7 @@
   </dest>
   <voice>
     *: none
-    lcd_bitmap: "Статус/Прокрутка"
+    lcd_bitmap: "Статус Прокрутка"
   </voice>
 </phrase>
 <phrase>
@@ -2091,7 +2091,7 @@
     *: "Да - Только новые"
   </dest>
   <voice>
-    *: "Да - Только новые"
+    *: "Да Только новые"
   </voice>
 </phrase>
 <phrase>
@@ -2105,7 +2105,7 @@
     *: "Спросить - Только новые"
   </dest>
   <voice>
-    *: "Спросить - Только новые"
+    *: "Спросить Только новые"
   </voice>
 </phrase>
 <phrase>
@@ -2231,7 +2231,7 @@
     *: ".проговаривать mp3"
   </dest>
   <voice>
-    *: ".проговаривать mp3"
+    *: "проговаривать mp3"
   </voice>
 </phrase>
 <phrase>
@@ -2692,7 +2692,7 @@
     *: "Усиление трека при случайном воспр."
   </dest>
   <voice>
-    *: "Усиление трека при случайном воспр."
+    *: "Усиление трека при случайном воспроизведении"
   </voice>
 </phrase>
 <phrase>
@@ -2833,7 +2833,7 @@
   </dest>
   <voice>
     *: none
-    lcd_invert,remote_lcd_invert: "Режим ЖКД"
+    lcd_invert,remote_lcd_invert: "Режим дисплея"
   </voice>
 </phrase>
 <phrase>
@@ -3421,7 +3421,7 @@
   </dest>
   <voice>
     *: none
-    battery_types: "Никель-металгидридный"
+    battery_types: "Никель металгидридный"
   </voice>
 </phrase>
 <phrase>
@@ -3503,7 +3503,7 @@
   </dest>
   <voice>
     *: none
-    rtc: "12ти-часовой"
+    rtc: "12ти часовой"
   </voice>
 </phrase>
 <phrase>
@@ -3520,7 +3520,7 @@
   </dest>
   <voice>
     *: none
-    rtc: "24х-часовой"
+    rtc: "24х часовой"
   </voice>
 </phrase>
 <phrase>
@@ -3705,7 +3705,7 @@
     *: "Открыть с ..."
   </dest>
   <voice>
-    *: "Открыть с ..."
+    *: "Открыть с"
   </voice>
 </phrase>
 <phrase>
@@ -3918,7 +3918,7 @@
   </dest>
   <voice>
     *: none
-    charging: "Аккумулятор: Заряжается"
+    charging: "Аккумулятор Заряжается"
   </voice>
 </phrase>
 <phrase>
@@ -3935,7 +3935,7 @@
   </dest>
   <voice>
     *: none
-    archosrecorder: "Аккумулятор: Выше возможного"
+    archosrecorder: "Аккумулятор Выше возможного"
   </voice>
 </phrase>
 <phrase>
@@ -3952,7 +3952,7 @@
   </dest>
   <voice>
     *: none
-    charging: "Аккумулятор: Импульсн. заряд"
+    charging: "Аккумулятор Импульсный заряд"
   </voice>
 </phrase>
 <phrase>
@@ -3984,7 +3984,7 @@
     *: "Диск:"
   </dest>
   <voice>
-    *: "Диск:"
+    *: "Диск"
   </voice>
 </phrase>
 <phrase>
@@ -3998,7 +3998,7 @@
     *: "Своб.:"
   </dest>
   <voice>
-    *: "Своб.:"
+    *: "Свободно"
   </voice>
 </phrase>
 <phrase>
@@ -4055,7 +4055,7 @@
   </dest>
   <voice>
     *: none
-    rtc: "Текущее время:"
+    rtc: "Текущее время"
   </voice>
 </phrase>
 <phrase>
@@ -4671,7 +4671,7 @@
   </dest>
   <voice>
     *: none
-    rtc: ""
+    rtc: "Воскресенье"
   </voice>
 </phrase>
 <phrase>
@@ -4688,7 +4688,7 @@
   </dest>
   <voice>
     *: none
-    rtc: ""
+    rtc: "Понедельник"
   </voice>
 </phrase>
 <phrase>
@@ -4705,7 +4705,7 @@
   </dest>
   <voice>
     *: none
-    rtc: ""
+    rtc: "Вторник"
   </voice>
 </phrase>
 <phrase>
@@ -4722,7 +4722,7 @@
   </dest>
   <voice>
     *: none
-    rtc: ""
+    rtc: "Среда"
   </voice>
 </phrase>
 <phrase>
@@ -4739,7 +4739,7 @@
   </dest>
   <voice>
     *: none
-    rtc: ""
+    rtc: "Четверг"
   </voice>
 </phrase>
 <phrase>
@@ -4756,7 +4756,7 @@
   </dest>
   <voice>
     *: none
-    rtc: ""
+    rtc: "Пятница"
   </voice>
 </phrase>
 <phrase>
@@ -4773,7 +4773,7 @@
   </dest>
   <voice>
     *: none
-    rtc: ""
+    rtc: "Суббота"
   </voice>
 </phrase>
 <phrase>
@@ -4790,7 +4790,7 @@
   </dest>
   <voice>
     *: none
-    rtc: "Янв"
+    rtc: "Январь"
   </voice>
 </phrase>
 <phrase>
@@ -4807,7 +4807,7 @@
   </dest>
   <voice>
     *: none
-    rtc: "Фев"
+    rtc: "Февраль"
   </voice>
 </phrase>
 <phrase>
@@ -4824,7 +4824,7 @@
   </dest>
   <voice>
     *: none
-    rtc: "Мар"
+    rtc: "Март"
   </voice>
 </phrase>
 <phrase>
@@ -4841,7 +4841,7 @@
   </dest>
   <voice>
     *: none
-    rtc: "Апр"
+    rtc: "Апрель"
   </voice>
 </phrase>
 <phrase>
@@ -4875,7 +4875,7 @@
   </dest>
   <voice>
     *: none
-    rtc: "Июн"
+    rtc: "Июнь"
   </voice>
 </phrase>
 <phrase>
@@ -4892,7 +4892,7 @@
   </dest>
   <voice>
     *: none
-    rtc: "Июл"
+    rtc: "Июль"
   </voice>
 </phrase>
 <phrase>
@@ -4909,7 +4909,7 @@
   </dest>
   <voice>
     *: none
-    rtc: "Авг"
+    rtc: "Август"
   </voice>
 </phrase>
 <phrase>
@@ -4926,7 +4926,7 @@
   </dest>
   <voice>
     *: none
-    rtc: "Сен"
+    rtc: "Сентябрь"
   </voice>
 </phrase>
 <phrase>
@@ -4943,7 +4943,7 @@
   </dest>
   <voice>
     *: none
-    rtc: "Окт"
+    rtc: "Октябрь"
   </voice>
 </phrase>
 <phrase>
@@ -4960,7 +4960,7 @@
   </dest>
   <voice>
     *: none
-    rtc: "Ноя"
+    rtc: "Ноябрь"
   </voice>
 </phrase>
 <phrase>
@@ -4977,7 +4977,7 @@
   </dest>
   <voice>
     *: none
-    rtc: "Дек"
+    rtc: "Декабрь"
   </voice>
 </phrase>
 <phrase>
@@ -4991,7 +4991,7 @@
     *: ""
   </dest>
   <voice>
-    *: "0"
+    *: "Ноль"
   </voice>
 </phrase>
 <phrase>
@@ -5005,7 +5005,7 @@
     *: ""
   </dest>
   <voice>
-    *: "1"
+    *: "Один"
   </voice>
 </phrase>
 <phrase>
@@ -5019,7 +5019,7 @@
     *: ""
   </dest>
   <voice>
-    *: "2"
+    *: "Два"
   </voice>
 </phrase>
 <phrase>
@@ -5033,7 +5033,7 @@
     *: ""
   </dest>
   <voice>
-    *: "3"
+    *: "Три"
   </voice>
 </phrase>
 <phrase>
@@ -5047,7 +5047,7 @@
     *: ""
   </dest>
   <voice>
-    *: "4"
+    *: "Четыре"
   </voice>
 </phrase>
 <phrase>
@@ -5061,7 +5061,7 @@
     *: ""
   </dest>
   <voice>
-    *: "5"
+    *: "Пять"
   </voice>
 </phrase>
 <phrase>
@@ -5075,7 +5075,7 @@
     *: ""
   </dest>
   <voice>
-    *: "6"
+    *: "Шесть"
   </voice>
 </phrase>
 <phrase>
@@ -5089,7 +5089,7 @@
     *: ""
   </dest>
   <voice>
-    *: "7"
+    *: "Семь"
   </voice>
 </phrase>
 <phrase>
@@ -5103,7 +5103,7 @@
     *: ""
   </dest>
   <voice>
-    *: "8"
+    *: "Восемь"
   </voice>
 </phrase>
 <phrase>
@@ -5117,7 +5117,7 @@
     *: ""
   </dest>
   <voice>
-    *: "9"
+    *: "Девять"
   </voice>
 </phrase>
 <phrase>
@@ -5131,7 +5131,7 @@
     *: ""
   </dest>
   <voice>
-    *: "10"
+    *: "Десять"
   </voice>
 </phrase>
 <phrase>
@@ -5145,7 +5145,7 @@
     *: ""
   </dest>
   <voice>
-    *: "11"
+    *: "Одинадцать"
   </voice>
 </phrase>
 <phrase>
@@ -5159,7 +5159,7 @@
     *: ""
   </dest>
   <voice>
-    *: "12"
+    *: "Двенадцать"
   </voice>
 </phrase>
 <phrase>
@@ -5173,7 +5173,7 @@
     *: ""
   </dest>
   <voice>
-    *: "13"
+    *: "Тринадцать"
   </voice>
 </phrase>
 <phrase>
@@ -5187,7 +5187,7 @@
     *: ""
   </dest>
   <voice>
-    *: "14"
+    *: "Четырнадцать"
   </voice>
 </phrase>
 <phrase>
@@ -5201,7 +5201,7 @@
     *: ""
   </dest>
   <voice>
-    *: "15"
+    *: "Пятнадцать"
   </voice>
 </phrase>
 <phrase>
@@ -5215,7 +5215,7 @@
     *: ""
   </dest>
   <voice>
-    *: "16"
+    *: "Шестнадцать"
   </voice>
 </phrase>
 <phrase>
@@ -5229,7 +5229,7 @@
     *: ""
   </dest>
   <voice>
-    *: "17"
+    *: "Семнадцать"
   </voice>
 </phrase>
 <phrase>
@@ -5243,7 +5243,7 @@
     *: ""
   </dest>
   <voice>
-    *: "18"
+    *: "Восемнадцать"
   </voice>
 </phrase>
 <phrase>
@@ -5257,7 +5257,7 @@
     *: ""
   </dest>
   <voice>
-    *: "19"
+    *: "Девятнадцать"
   </voice>
 </phrase>
 <phrase>
@@ -5271,7 +5271,7 @@
     *: ""
   </dest>
   <voice>
-    *: "20"
+    *: "Двадцать"
   </voice>
 </phrase>
 <phrase>
@@ -5285,7 +5285,7 @@
     *: ""
   </dest>
   <voice>
-    *: "30"
+    *: "Тридцать"
   </voice>
 </phrase>
 <phrase>
@@ -5299,7 +5299,7 @@
     *: ""
   </dest>
   <voice>
-    *: "40"
+    *: "Сорок"
   </voice>
 </phrase>
 <phrase>
@@ -5313,7 +5313,7 @@
     *: ""
   </dest>
   <voice>
-    *: "50"
+    *: "Пятьдесят"
   </voice>
 </phrase>
 <phrase>
@@ -5327,7 +5327,7 @@
     *: ""
   </dest>
   <voice>
-    *: "60"
+    *: "Шестьдесят"
   </voice>
 </phrase>
 <phrase>
@@ -5341,7 +5341,7 @@
     *: ""
   </dest>
   <voice>
-    *: "70"
+    *: "Семьдесят"
   </voice>
 </phrase>
 <phrase>
@@ -5355,7 +5355,7 @@
     *: ""
   </dest>
   <voice>
-    *: "80"
+    *: "Восемьдесят"
   </voice>
 </phrase>
 <phrase>
@@ -5369,7 +5369,7 @@
     *: ""
   </dest>
   <voice>
-    *: "90"
+    *: "Девяносто"
   </voice>
 </phrase>
 <phrase>
@@ -5383,7 +5383,7 @@
     *: ""
   </dest>
   <voice>
-    *: "100"
+    *: "сто"
   </voice>
 </phrase>
 <phrase>
@@ -5397,7 +5397,7 @@
     *: ""
   </dest>
   <voice>
-    *: "1000"
+    *: "Тысяч"
   </voice>
 </phrase>
 <phrase>
@@ -5411,7 +5411,7 @@
     *: ""
   </dest>
   <voice>
-    *: "1000000"
+    *: "Миллион"
   </voice>
 </phrase>
 <phrase>
@@ -5425,7 +5425,7 @@
     *: ""
   </dest>
   <voice>
-    *: "1000000000"
+    *: "Миллиард"
   </voice>
 </phrase>
 <phrase>
@@ -5663,7 +5663,7 @@
     *: "Б"
   </dest>
   <voice>
-    *: ""
+    *: "Байт"
   </voice>
 </phrase>
 <phrase>
@@ -5719,7 +5719,7 @@
     *: "."
   </dest>
   <voice>
-    *: "."
+    *: "точка"
   </voice>
 </phrase>
 <phrase>
@@ -6069,7 +6069,7 @@
     *: ""
   </dest>
   <voice>
-    *: "Ы"
+    *: "Уай"
   </voice>
 </phrase>
 <phrase>
@@ -6352,7 +6352,7 @@
     *: "Очистить динамич. список песен?"
   </dest>
   <voice>
-    *: "Очистить динамич. список песен?"
+    *: "Очистить динамический список песен?"
   </voice>
 </phrase>
 <phrase>
@@ -6691,7 +6691,7 @@
   </dest>
   <voice>
     *: none
-    radio: "Очистить текущие предуст.?"
+    radio: "Очистить текущие предустановки?"
   </voice>
 </phrase>
 <phrase>
@@ -7505,7 +7505,7 @@
     *: "Сканирование диска..."
   </dest>
   <voice>
-    *: "Сканирование диска..."
+    *: "Сканирование диска"
   </voice>
 </phrase>
 <phrase>
@@ -7561,7 +7561,7 @@
     *: "Комментарий"
   </dest>
   <voice>
-    *: ""
+    *: "Комментарий"
   </voice>
 </phrase>
 <phrase>
@@ -7578,7 +7578,7 @@
   </dest>
   <voice>
     *: none
-    agc: "DJ-Сет (медл.)"
+    agc: "DJ-Сет медленно"
   </voice>
 </phrase>
 <phrase>
@@ -7643,7 +7643,7 @@
   </dest>
   <voice>
     *: none
-    lcd_sleep: "Режим сна (после отключения подсветки)"
+    lcd_sleep: "Режим сна после отключения подсветки"
   </voice>
 </phrase>
 <phrase>
@@ -7671,7 +7671,7 @@
     *: "Удаление..."
   </dest>
   <voice>
-    *: "Удаление..."
+    *: "Удаление"
   </voice>
 </phrase>
 <phrase>
@@ -7739,7 +7739,7 @@
   </dest>
   <voice>
     *: none
-    recording: "(Как в источнике)"
+    recording: "Как в источнике"
   </voice>
 </phrase>
 <phrase>
@@ -7756,7 +7756,7 @@
   </dest>
   <voice>
     *: none
-    headphone_detection: "Отключить воспр. при включении если наушники не вставлены"
+    headphone_detection: "Отключить воспроизведение при включении если наушники не вставлены"
   </voice>
 </phrase>
 <phrase>
@@ -7911,7 +7911,7 @@
   </dest>
   <voice>
     *: none
-    rtc: "Установить время/дату"
+    rtc: "Установить время дату"
   </voice>
 </phrase>
 <phrase>
@@ -8113,7 +8113,7 @@
     archosplayer: "Буф:"
   </dest>
   <voice>
-    *: "Буфер:"
+    *: "Буфер"
   </voice>
 </phrase>
 <phrase>
@@ -8288,7 +8288,7 @@
     *: "Просмотреть файл .cue"
   </dest>
   <voice>
-    *: "Просмотреть файл .cue"
+    *: "Просмотреть файл cue"
   </voice>
 </phrase>
 <phrase>
@@ -8378,7 +8378,7 @@
     *: "Использовать файлы .talk"
   </dest>
   <voice>
-    *: "Использовать файлы .talk"
+    *: "Использовать файлы talk"
   </voice>
 </phrase>
 <phrase>
@@ -8662,7 +8662,7 @@
   </dest>
   <voice>
     *: none
-    agc: "Концерт (медл.)"
+    agc: "Концерт медленно"
   </voice>
 </phrase>
 <phrase>
@@ -8741,7 +8741,7 @@
   </dest>
   <voice>
     *: none
-    lcd_bitmap: ""
+    lcd_bitmap: "Режим"
   </voice>
 </phrase>
 <phrase>
@@ -8758,7 +8758,7 @@
   </dest>
   <voice>
     *: none
-    agc: "Голос (быстр.)"
+    agc: "Голос быстро"
   </voice>
 </phrase>
 <phrase>
@@ -8789,7 +8789,7 @@
   </dest>
   <voice>
     *: none
-    recording: "(Нет настроек)"
+    recording: "Нет настроек"
   </voice>
 </phrase>
 <phrase>
@@ -8882,7 +8882,7 @@
     *: "Режим:"
   </dest>
   <voice>
-    *: "Режим:"
+    *: "Режим"
   </voice>
 </phrase>
 <phrase>
@@ -9147,7 +9147,7 @@
     *: "Длина"
   </dest>
   <voice>
-    *: ""
+    *: "Длина"
   </voice>
 </phrase>
 <phrase>
@@ -9603,7 +9603,7 @@
     *: "Поддержка Cue"
   </dest>
   <voice>
-    *: "Поддержка Cue"
+    *: "Поддержка Куе"
   </voice>
 </phrase>
 <phrase>
@@ -9634,7 +9634,7 @@
     *: "Номер диска"
   </dest>
   <voice>
-    *: ""
+    *: "Номер диска"
   </voice>
 </phrase>
 <phrase>
@@ -9930,7 +9930,7 @@
     *: "Перемещение..."
   </dest>
   <voice>
-    *: "Перемещение..."
+    *: "Перемещение"
   </voice>
 </phrase>
 <phrase>
@@ -10017,7 +10017,7 @@
     *: ", Тасование"
   </dest>
   <voice>
-    *: ""
+    *: "Тасование"
   </voice>
 </phrase>
 <phrase>
@@ -10096,7 +10096,7 @@
     *: "Исполнитель"
   </dest>
   <voice>
-    *: ""
+    *: "Исполнитель"
   </voice>
 </phrase>
 <phrase>
@@ -10394,7 +10394,7 @@
     *: "%s не существует"
   </dest>
   <voice>
-    *: ""
+    *: "Нет каталога списков воспроизведения"
   </voice>
 </phrase>
 <phrase>
@@ -10698,7 +10698,7 @@
     *: ""
   </dest>
   <voice>
-    *: "OK"
+    *: "OKей"
   </voice>
 </phrase>
 <phrase>
@@ -10732,7 +10732,7 @@
   </dest>
   <voice>
     *: none
-    recording: ""
+    recording: "Размер"
   </voice>
 </phrase>
 <phrase>
@@ -10766,7 +10766,7 @@
   </dest>
   <voice>
     *: none
-    recording: ""
+    recording: "Время разделения"
   </voice>
 </phrase>
 <phrase>
@@ -10783,7 +10783,7 @@
   </dest>
   <voice>
     *: none
-    recording: ""
+    recording: "КЛИП"
   </voice>
 </phrase>
 <phrase>
@@ -10817,7 +10817,7 @@
   </dest>
   <voice>
     *: none
-    recording: ""
+    recording: "Имя файла"
   </voice>
 </phrase>
 <phrase>
@@ -10851,7 +10851,7 @@
   </dest>
   <voice>
     *: none
-    agc: "Автоподстройка"
+    agc: "Автоматическая регулировка усиления"
   </voice>
 </phrase>
 <phrase>
@@ -12009,7 +12009,7 @@
   </dest>
   <voice>
     *: none
-    gigabeats: "Доп. настройки управления тоном"
+    gigabeats: "Дополнительные настройки управления тоном"
   </voice>
 </phrase>
 <phrase>
@@ -12074,7 +12074,7 @@
     *: "Композитор"
   </dest>
   <voice>
-    *: ""
+    *: "Композитор"
   </voice>
 </phrase>
 <phrase>
@@ -12224,7 +12224,7 @@
   </dest>
   <voice>
     *: none
-    radio: ""
+    radio: "Станция"
   </voice>
 </phrase>
 <phrase>
@@ -12773,10 +12773,10 @@
     *: "Automatic"
   </source>
   <dest>
-    *: "Автоматич."
+    *: "Автоматически"
   </dest>
   <voice>
-    *: "Автоматич."
+    *: "Автоматически"
   </voice>
 </phrase>
 <phrase>
@@ -12871,10 +12871,10 @@
     *: "Glyphs To Cache"
   </source>
   <dest>
-    *: "Кешировать глифов"
+    *: "Кешировать глифы"
   </dest>
   <voice>
-    *: "Кешировать глифов"
+    *: "Кешировать глифы"
   </voice>
 </phrase>
 <phrase>
@@ -13217,7 +13217,7 @@
     *: "128x"
   </dest>
   <voice>
-    *: "128x"
+    *: "Передискретизация 128"
   </voice>
 </phrase>
 <phrase>
@@ -13231,7 +13231,7 @@
     *: "64x"
   </dest>
   <voice>
-    *: "64x"
+    *: "Передискретизация 64"
   </voice>
 </phrase>
 <phrase>
@@ -13245,7 +13245,7 @@
     *: "32x"
   </dest>
   <voice>
-    *: "32x"
+    *: "Передискретизация 32"
   </voice>
 </phrase>
 <phrase>
